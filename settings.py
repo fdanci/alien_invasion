@@ -14,14 +14,5 @@ class Settings:
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 5
-        # Text settings
-        self.text_size = 15
-        self.text_font = "Comic Sans MS"
         # Ship settings
         self.ship_speed = 1.5
-
-
-    def reset_screen_size(self):
-        """Reset screen size to initial values."""
-        self.screen_width = 1200
-        self.screen_height = 800
