@@ -21,7 +21,7 @@ class Settings:
         self.ship_speed = 1.5
 
 
-def reset_screen_size(self):
-    """Reset screen size to initial values."""
-    self.screen_width = 1200
-    self.screen_height = 800
+    def reset_screen_size(self):
+        """Reset screen size to initial values."""
+        self.screen_width = 1200
+        self.screen_height = 800
