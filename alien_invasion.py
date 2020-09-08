@@ -218,7 +218,6 @@ class AlienInvasion:
         # elif event.key == pygame.K_DOWN:
         #     self.ship.moving_down = True
         elif event.key == pygame.K_q:
-            self.saving_management.save()
             sys.exit()
 
     def _check_keyup_events(self, event):
@@ -308,8 +307,15 @@ class AlienInvasion:
                 self._ship_hit()
                 break
 
+def main():
+    """Make a game instance, run the game, save data before exit."""
+    try:
+        ai = AlienInvasion()
+        ai.run_game()
+    except Exception:
+        pass
+    finally:
+        ai.saving_management.save()
 
 if __name__ == '__main__':
-    # Make a game instance, and run the game.
-    ai = AlienInvasion()
-    ai.run_game()
+    main()
