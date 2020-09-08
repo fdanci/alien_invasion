@@ -29,7 +29,7 @@ class AlienInvasion:
             (self.settings.screen_width,
              self.settings.screen_height))
 
-        pygame.display.set_caption("Alien Invasion")
+        pygame.display.set_caption("Daniela Invadeaza Lumea")
 
         # Create an instance to store game statistics,
         # and create a scoreboard.
