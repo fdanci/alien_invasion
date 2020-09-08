@@ -28,4 +28,9 @@ class SoundPlayer():
         effect = pygame.mixer.Sound('sounds/bullet.wav')
         effect.play()
 
+    def ship_hit(self):
+        """Play sound when ship is hit."""
+        effect = pygame.mixer.Sound('sounds/hit.wav')
+        effect.play()
+
 

@@ -58,7 +58,6 @@ class AlienInvasion:
 
         # Initialize the sound player.
         self.sound_player = SoundPlayer(self)
-        self.sound_player.run_bancground_music()
         
 
     def init_saving_mechanism(self):
@@ -76,6 +75,7 @@ class AlienInvasion:
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
+            self.sound_player.ship_hit()
             # Decrement ships_left, and update scoreboard.
             self.stats.ships_left -= 1
             self.sb.prep_ships()
@@ -88,6 +88,7 @@ class AlienInvasion:
             # Pause.
             sleep(0.5)
         else:
+            # TODO Wasted
             self.stats.game_active = False
 
     def _create_fleet(self):
@@ -187,6 +188,8 @@ class AlienInvasion:
 
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
+
+            self.sound_player.run_bancground_music()
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -306,7 +309,7 @@ class AlienInvasion:
             self.start_new_level()
 
     def start_new_level(self):
-        """Starts new level, increments level, resets ship"""
+        """Starts new level, increments level, resets ship."""
         # Destroy existing bullets and create new fleet.
         self.bullets.empty()
         self._create_fleet()
