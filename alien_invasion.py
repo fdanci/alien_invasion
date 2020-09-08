@@ -15,6 +15,7 @@ from scoreboard import Scoreboard
 from save_data import SaveData
 from saving_management import SavingManagement
 from enemy_models import ENEMY_MODELS
+from sound_player import SoundPlayer
 
 
 class AlienInvasion:
@@ -54,6 +55,11 @@ class AlienInvasion:
 
         game_icon = pygame.image.load('images/game_logo.png')
         pygame.display.set_icon(game_icon)
+
+        # Initialize the sound player.
+        self.sound_player = SoundPlayer(self)
+        self.sound_player.run_bancground_music()
+        
 
     def init_saving_mechanism(self):
         """Initialize saving and loading settings components."""
@@ -323,8 +329,8 @@ def main():
     try:
         ai = AlienInvasion()
         ai.run_game()
-    except Exception:
-        pass
+    except Exception as err:
+        print(err)
     finally:
         ai.saving_management.save()
 
