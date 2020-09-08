@@ -12,29 +12,20 @@ class SoundPlayer():
 
     def run_bancground_music(self):
         """Start playing background music."""
-        try:
-            pygame.mixer.music.load('sounds/background_1.mp3')
-            pygame.mixer.music.play()
-        except Exception as e:
-            print(e)
+        pygame.mixer.music.load('sounds/background_1.mp3')
+        pygame.mixer.music.play()
 
     def pause_background_music(self):
         """Pause playing background music."""
-        try:
-            pygame.mixer.music.pause()
-        except Exception as e:
-            print(e)
+        pygame.mixer.music.pause()
 
     def stop_background_music(self):
         """Stop playing background music."""
-        try:
-            pygame.mixer.music.stop()
-        except Exception as e:
-            print(e)
+        pygame.mixer.music.stop()
 
-    def change_track(self):
-        """Change current background music."""
-        try:
-            pygame.mixer.music.load('sounds/background_1.mp3')
-        except Exception as e:
-            print(e)
+    def shoot_bullet(self):
+        """Play bullet sound."""
+        effect = pygame.mixer.Sound('sounds/bullet.wav')
+        effect.play()
+
+

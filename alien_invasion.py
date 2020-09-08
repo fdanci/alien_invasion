@@ -218,12 +218,13 @@ class AlienInvasion:
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
+            self.sound_player.shoot_bullet()
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
-        if event.key == pygame.K_SPACE:
+        if event.key == pygame.K_SPACE and self.stats.game_active:
             self._fire_bullet()
         elif event.key == pygame.K_RIGHT:
             self.ship.moving_right = True
