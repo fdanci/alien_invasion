@@ -1,5 +1,6 @@
 import sys
 import pygame
+from random import randint as rand
 
 
 from game_stats import GameStats
@@ -13,6 +14,7 @@ from button import Button
 from scoreboard import Scoreboard
 from save_data import SaveData
 from saving_management import SavingManagement
+from enemy_models import ENEMY_MODELS
 
 
 class AlienInvasion:
@@ -42,6 +44,7 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
+        self.enemy_model = None
         self._create_fleet()
 
         # Make the Play button.
@@ -82,7 +85,11 @@ class AlienInvasion:
         """Create the fleet of aliens."""
         # Create an alien and find the number of aliens in a row.
         # Spacing between each alien is equal to one alien width.
-        alien = Alien(self)
+
+        self.enemy_model = pygame.image.load(
+            ENEMY_MODELS[rand(0, len(ENEMY_MODELS) - 1)])  # Set random enemy model
+
+        alien = Alien(self, self.enemy_model)
         alien_width, alien_height = alien.rect.size
         alien_width = alien.rect.width
         available_space_x = self.settings.screen_width - (2 * alien_width)
@@ -103,7 +110,7 @@ class AlienInvasion:
 
     def _create_alien(self, alien_number, row_number):
         """Create an alien and place it in the row."""
-        alien = Alien(self)
+        alien = Alien(self, self.enemy_model)
         alien_width, alien_height = alien.rect.size
         alien_width = alien.rect.width
         alien.x = alien_width + 2 * alien_width * alien_number
@@ -307,6 +314,7 @@ class AlienInvasion:
                 self._ship_hit()
                 break
 
+
 def main():
     """Make a game instance, run the game, save data before exit."""
     try:
@@ -316,6 +324,7 @@ def main():
         pass
     finally:
         ai.saving_management.save()
+
 
 if __name__ == '__main__':
     main()
