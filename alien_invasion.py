@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+
 from game_stats import GameStats
 
 from settings import Settings
@@ -10,6 +11,8 @@ from alien import Alien
 from time import sleep
 from button import Button
 from scoreboard import Scoreboard
+from save_data import SaveData
+from saving_management import SavingManagement
 
 
 class AlienInvasion:
@@ -43,6 +46,20 @@ class AlienInvasion:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
+
+        self.init_saving_mechanism()
+
+    def init_saving_mechanism(self):
+        """Initialize saving and loading settings components."""
+        # Initialize highscore, aliens killed saving management.
+        self.save_data = SaveData(self)
+        self.saving_management = SavingManagement(self.save_data)
+
+        # Try loading saved data if any.
+        saved_data = self.saving_management.get_saved_data()
+        if saved_data:
+            self.stats.load_saved_data(saved_data)
+            self.sb.prep_high_score()
 
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
@@ -196,11 +213,12 @@ class AlienInvasion:
             self.ship.moving_right = True
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = True
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = True
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = True
+        # elif event.key == pygame.K_UP:
+        #     self.ship.moving_up = True
+        # elif event.key == pygame.K_DOWN:
+        #     self.ship.moving_down = True
         elif event.key == pygame.K_q:
+            self.saving_management.save()
             sys.exit()
 
     def _check_keyup_events(self, event):
@@ -209,10 +227,10 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
-        elif event.key == pygame.K_UP:
-            self.ship.moving_up = False
-        elif event.key == pygame.K_DOWN:
-            self.ship.moving_down = False
+        # elif event.key == pygame.K_UP:
+        #     self.ship.moving_up = False
+        # elif event.key == pygame.K_DOWN:
+        #     self.ship.moving_down = False
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -264,6 +282,7 @@ class AlienInvasion:
         if collisions:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
+                self.stats.aliens_killed += 1
             self.sb.prep_score()
             self.sb.check_high_score()
         if not self.aliens:
