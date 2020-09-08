@@ -52,6 +52,9 @@ class AlienInvasion:
 
         self.init_saving_mechanism()
 
+        game_icon = pygame.image.load('images/game_logo.png')
+        pygame.display.set_icon(game_icon)
+
     def init_saving_mechanism(self):
         """Initialize saving and loading settings components."""
         # Initialize highscore, aliens killed saving management.
