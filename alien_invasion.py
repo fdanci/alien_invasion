@@ -137,6 +137,7 @@ class AlienInvasion:
                 self._update_aliens()
                 self._update_screen()
             else:
+                self.sound_player.stop_background_music()
                 # Show the mouse cursor.
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
