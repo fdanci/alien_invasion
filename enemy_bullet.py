@@ -11,10 +11,7 @@ class EnemyBullet(Sprite):
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.color = self.settings.enemy_bullet_color
-
         self.alien = alien
-
-        self.image = pygame.image.load('images/bullet.bmp')
 
         # Create a bullet rect at (0, 0) and then set correct position underneath the alien.
         self.rect = pygame.Rect(
@@ -26,10 +23,7 @@ class EnemyBullet(Sprite):
         self.x = float(self.rect.x)  # Correct bullet x position
 
     def update(self):
-        """
-        Move the bullet up the screen. It is called
-        automatically by 'pygame.sprite.Group().update()'
-        """
+        """Move the bullet down the screen. It is called automatically by 'pygame.sprite.Group().update()'"""
         # Update the decimal position of the bullet.
         self.y += self.settings.enemy_bullet_speed
         # Update the rect position.

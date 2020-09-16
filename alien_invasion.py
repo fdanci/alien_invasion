@@ -82,13 +82,14 @@ class AlienInvasion:
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
+            self.enemy_bullets.empty()
             # Create a new fleet and center the ship.
             self._create_fleet()
             self.ship.center_ship()
             # Pause.
             sleep(0.5)
         else:
-            # TODO Wasted
+            # TODO Implement 'Game Over' screen.
             self.stats.game_active = False
 
     def _create_fleet(self):
@@ -306,9 +307,21 @@ class AlienInvasion:
 
     def update_enemy_bullets(self):
         """Update the bullets fired by the enemy aliens."""
-        # Todo: Implement enemy bullet updates
         self.enemy_bullets.update()
+        # Get rid of bullets that are out of the screen.
+        for bullet in self.enemy_bullets.copy():
+            if bullet.rect.top > self.screen.get_rect().bottom:
+                self.enemy_bullets.remove(bullet)
+
+        self._check_enemy_bullet_ship_collision()
         # END update_enemy_bullets
+
+    def _check_enemy_bullet_ship_collision(self):
+        """Respond to bullet-ship collision."""
+        if pygame.sprite.spritecollideany(self.ship, self.enemy_bullets):
+            self._ship_hit()
+
+        # END _check_enemy_bullet_ship_collision
 
     def update_ship_bullets(self):
         """Update the bullets fired by the ship."""
