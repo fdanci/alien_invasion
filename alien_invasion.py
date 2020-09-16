@@ -27,7 +27,6 @@ class AlienInvasion:
         self.SHOOT_NOT_MULTIPLE_ENEMIES = True
 
         pygame.init()
-        # pygame.mouse.set_visible(False)
 
         self.settings = Settings()
         # Set screen size.
@@ -191,6 +190,7 @@ class AlienInvasion:
             pygame.mouse.set_visible(False)
             # Start music during gameplay.
             SoundPlayer.play_background_music()
+        # END _check_play_button
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -198,12 +198,14 @@ class AlienInvasion:
             if alien.check_edges():
                 self._change_fleet_direction()
                 break
+        # END _check_fleet_edges
 
     def _change_fleet_direction(self):
         """Drop the entire fleet and change the fleet's direction."""
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
+        # END _change_fleet_direction
 
     def _update_aliens(self):
         """
@@ -242,6 +244,13 @@ class AlienInvasion:
             SoundPlayer.shoot_bullet()
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+
+        if self.settings.power_up_active:
+            if self.settings.powered_up_bullets > 0:
+                self.settings.powered_up_bullets -= 1
+            else:
+                self.settings.exit_power_mode(self)
+                self.settings.power_up_active = False
         # END _fire_bullet
 
     def _fire_enemy_bullet(self):
@@ -252,13 +261,12 @@ class AlienInvasion:
             SoundPlayer.shoot_enemy_bullet()
             new_alien_bullet = EnemyBullet(self, random_alien)
             self.enemy_bullets.add(new_alien_bullet)
-            self._drop_power_up()
         # END _fire_alien_bullet
 
     def _drop_power_up(self):
         """Randomly, drop a power up item on the screen."""
-        # TODO: Finish this last.
-        if 1 == rand(0, 1):
+        if not self.settings.power_up_active \
+                and 1 == rand(0, self.settings.power_up_chance):
             power_up = PowerUp(self)
             self.power_ups.add(power_up)
         # END _drop_power_up
@@ -277,6 +285,7 @@ class AlienInvasion:
         #     self.ship.moving_down = True
         elif event.key == pygame.K_q:
             sys.exit()
+        # END _check_keydown_events
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
@@ -293,7 +302,6 @@ class AlienInvasion:
         """Update images on the screen for current frame, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
         self.screen.fill(self.settings.bg_color)
-
         self.ship.update()
         self.ship.blitme()
 
@@ -325,6 +333,8 @@ class AlienInvasion:
 
     def _update_power_ups(self):
         """Update position of power ups."""
+        self._drop_power_up()  # Spawn a power up maybe
+        # Update any existing power ups.
         self.power_ups.update()
         # Get rid of power ups that are out of the screen.
         for power_up in self.power_ups.copy():
@@ -335,17 +345,17 @@ class AlienInvasion:
         # END update_power_ups
 
     def _check_power_up_ship_collision(self):
-        """If any power up colided with the ship, remove that power up."""
-        power_up = pygame.sprite.spritecollide(self.ship, self.power_ups, dokill=True)
-        if power_up:
-            self.power_up_the_ship()
+        """If any power up collided with the ship, remove that power up."""
+        if not self.settings.power_up_active:
+            if pygame.sprite.spritecollide(
+                    self.ship, self.power_ups, dokill=True):
+                self.power_up_the_ship()
         # END _check_power_up_ship_collision
 
     def power_up_the_ship(self):
-        """Make ship stronger"""
+        """Make ship stronger."""
+        self.settings.enter_power_mode(self)
         SoundPlayer.power_up()
-        # TODO: Implement random power ups.
-        self.SHOOT_NOT_MULTIPLE_ENEMIES = False
         # END power_up_the_ship
 
     def update_enemy_bullets(self):
@@ -380,18 +390,6 @@ class AlienInvasion:
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""
-        # Check for any bullets that have hit aliens.
-        # If so, get rid of the bullet and the alien.
-        # The sprite.groupcollide() function compares the rects of each element
-        # in one group with the rects of each element in another group. In this case,
-        # it compares each bullet’s rect with each alien’s rect and returns a dictionary
-        # containing the bullets and aliens that have collided. Each key in the
-        # dictionary will be a bullet, and the corresponding value will be the alien that
-        # was hit.
-        # To make a high-powered
-        # bullet that can travel to the top of the screen, destroying every alien in its
-        # path, you could set the first Boolean argument to False and keep the second
-        # Boolean argument set to True.
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, self.SHOOT_NOT_MULTIPLE_ENEMIES, True)
 
@@ -414,6 +412,7 @@ class AlienInvasion:
         # Increase level.
         self.stats.level += 1
         self.sb.prep_level()
+        # END start_new_level
 
     def _check_aliens_bottom(self):
         """Check if any aliens have reached the bottom of the screen."""
@@ -424,6 +423,7 @@ class AlienInvasion:
                 SoundPlayer.enemy_hit_bottom()
                 self._ship_hit()
                 break
+        # END _check_aliens_bottom
 
 
 def main():
@@ -434,10 +434,11 @@ def main():
         ai = AlienInvasion()
         ai.run_game()
     except Exception as err:
-        print(err)
+        print(f"{err}\n{err.__module__}")
     finally:
         if ai:
             ai.saving_management.save()
+    # END main
 
 
 if __name__ == '__main__':

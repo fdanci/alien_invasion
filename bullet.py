@@ -11,7 +11,12 @@ class Bullet(Sprite):
         self.screen = ai_game.screen
         self.settings = ai_game.settings
 
-        self.image = pygame.image.load('images/bullet.bmp')
+        # If big bullet power up active, load bigger bullet image, else default image.
+        if ai_game.settings.power_up_active and \
+                ai_game.settings.power_up == 'big_bullet':
+            self.image = pygame.image.load('images/big_bullet.bmp')
+        else:
+            self.image = pygame.image.load('images/bullet.bmp')
 
         # Create a bullet rect at (0, 0) and then set correct position on top of the ship.
         self.rect = pygame.Rect(
@@ -20,7 +25,7 @@ class Bullet(Sprite):
 
         # Store the bullet's position as a decimal value.
         self.y = float(self.rect.y)
-        self.x = float(self.rect.x) - 15.0  # Correct bullet x position
+        self.x = float(self.rect.x - 5)  # Correct bullet x position
 
     def update(self):
         """

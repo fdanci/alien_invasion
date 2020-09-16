@@ -2,6 +2,8 @@ import pygame
 from pygame.sprite import Sprite
 from random import randint
 
+POWER_UPS = ['big_bullet', 'fast_bullets']
+
 
 class PowerUp(Sprite):
     """Class representing the power drops of the game."""
@@ -38,3 +40,9 @@ class PowerUp(Sprite):
     def draw_power_up(self):
         """Draw the power up to the screen."""
         self.screen.blit(self.image, self.rect)
+
+    @staticmethod
+    def get_random_power():
+        """Return random power up."""
+        return POWER_UPS[randint(0, len(POWER_UPS) - 1)]
+        # END get_random_power
