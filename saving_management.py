@@ -2,7 +2,7 @@ import json
 
 
 class SavingManagement:
-    """This class will manage the saving sistem."""
+    """This class will manage the saving system."""
 
     FILE_NAME = "save.txt"
 

@@ -21,6 +21,8 @@ from enemy_bullet import EnemyBullet
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
 
+    ALIEN_BULLET_SHOOT_PROBABILITY = 550
+
     def __init__(self):
         """Initialize the game, and create game resources."""
         pygame.init()
@@ -52,25 +54,26 @@ class AlienInvasion:
         # Make the Play button.
         self.play_button = Button(self, "Play")
 
-        self.init_saving_mechanism()
+        # Initialize saving components.
+        self.save_data = SaveData(self)
+        self.saving_management = SavingManagement(self.save_data)
+        self.load_saved_data()
 
+        # Set game's icon.
         game_icon = pygame.image.load('images/game_logo.png')
         pygame.display.set_icon(game_icon)
 
         # Initialize the sound player.
         self.sound_player = SoundPlayer(self)
 
-    def init_saving_mechanism(self):
-        """Initialize saving and loading settings components."""
-        # Initialize highscore, aliens killed saving management.
-        self.save_data = SaveData(self)
-        self.saving_management = SavingManagement(self.save_data)
-
+    def load_saved_data(self):
+        """Load saved data from the save file and write it to scoreboard."""
         # Try loading saved data if any.
         saved_data = self.saving_management.get_saved_data()
         if saved_data:
             self.stats.load_saved_data(saved_data)
             self.sb.prep_high_score()
+        # END load_saved_data
 
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
@@ -122,7 +125,6 @@ class AlienInvasion:
     def _create_alien(self, alien_number, row_number):
         """Create an alien and place it in the row."""
         alien = Alien(self, self.enemy_model)
-        alien_width, alien_height = alien.rect.size
         alien_width = alien.rect.width
         alien.x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien.x
@@ -169,28 +171,24 @@ class AlienInvasion:
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
             # Reset the game settings.
-            self.settings.initialize_dynamic_settings()
+            self.settings.reset_settings()
             # Reset the game statistics.
             self.stats.reset_stats()
             self.stats.game_active = True
-
             # Game info
             self.sb.prep_score()
             self.sb.prep_level()
             self.sb.prep_ships()
-
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
-
             self.bullets.empty()
             # Create a new fleet and center the ship.
             self._create_fleet()
             self.ship.center_ship()
-
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
-
-            self.sound_player.run_bancground_music()
+            # Start music during gameplay.
+            self.sound_player.play_background_music()
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -224,8 +222,8 @@ class AlienInvasion:
 
     def get_alien_randomly(self):
         """Return a random alien that will shoot a bullet."""
-        # Chances of 1/200 for a alien to shoot a bullet this frame
-        if 1 == rand(0, 200):
+        # Chances for a alien to shoot a bullet this frame.
+        if 1 == rand(0, self.ALIEN_BULLET_SHOOT_PROBABILITY):
             return self.get_random_alien()
         # END shoot_randomly
 
@@ -384,13 +382,16 @@ class AlienInvasion:
 
 def main():
     """Make a game instance, run the game, save data before exit."""
+    ai = None
+
     try:
         ai = AlienInvasion()
         ai.run_game()
     except Exception as err:
         print(err)
     finally:
-        ai.saving_management.save()
+        if ai:
+            ai.saving_management.save()
 
 
 if __name__ == '__main__':

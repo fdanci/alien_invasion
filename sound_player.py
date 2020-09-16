@@ -10,7 +10,7 @@ class SoundPlayer():
         self.ai_game = ai_game
         sound_player.init()
 
-    def run_bancground_music(self):
+    def play_background_music(self):
         """Start playing background music."""
         pygame.mixer.music.load('sounds/background_1.mp3')
         pygame.mixer.music.play()
