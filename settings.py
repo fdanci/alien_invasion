@@ -26,6 +26,7 @@ class Settings:
         self.ship_limit = 3
 
         # Alien settings
+        self.enemy_bullet_probability = 550
         self.fleet_drop_speed = 15
         self.fleet_direction = 1  # Fleet_direction of 1 represents right; -1 represents left
         self.alien_speed = 1.0

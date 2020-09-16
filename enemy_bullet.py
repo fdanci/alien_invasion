@@ -13,14 +13,14 @@ class EnemyBullet(Sprite):
         self.color = self.settings.enemy_bullet_color
         self.alien = alien
 
-        # Create a bullet rect at (0, 0) and then set correct position underneath the alien.
+        # Create a bullet rect at (0, 0) and then set correct position underneath the enemy.
         self.rect = pygame.Rect(
             0, 0, self.settings.enemy_bullet_width, self.settings.enemy_bullet_height)
         self.rect.midbottom = alien.rect.midbottom
 
         # Store the bullet's position as a decimal value.
         self.y = float(self.rect.y)
-        self.x = float(self.rect.x)  # Correct bullet x position
+        self.x = float(self.rect.x)
 
     def update(self):
         """Move the bullet down the screen. It is called automatically by 'pygame.sprite.Group().update()'"""

@@ -21,8 +21,6 @@ from enemy_bullet import EnemyBullet
 class AlienInvasion:
     """Overall class to manage game assets and behavior."""
 
-    ALIEN_BULLET_SHOOT_PROBABILITY = 550
-
     def __init__(self):
         """Initialize the game, and create game resources."""
         pygame.init()
@@ -63,8 +61,8 @@ class AlienInvasion:
         game_icon = pygame.image.load('images/game_logo.png')
         pygame.display.set_icon(game_icon)
 
-        # Initialize the sound player.
-        self.sound_player = SoundPlayer(self)
+        # Initialize the sound mixer.
+        pygame.mixer.init()
 
     def load_saved_data(self):
         """Load saved data from the save file and write it to scoreboard."""
@@ -78,7 +76,6 @@ class AlienInvasion:
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
-            self.sound_player.ship_hit()
             # Decrement ships_left, and update scoreboard.
             self.stats.ships_left -= 1
             self.sb.prep_ships()
@@ -141,7 +138,7 @@ class AlienInvasion:
                 self._update_aliens()
                 self._update_screen()
             else:
-                self.sound_player.stop_background_music()
+                SoundPlayer.stop_background_music()
                 # Show the mouse cursor.
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
@@ -188,7 +185,7 @@ class AlienInvasion:
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
             # Start music during gameplay.
-            self.sound_player.play_background_music()
+            SoundPlayer.play_background_music()
 
     def _check_fleet_edges(self):
         """Respond appropriately if any aliens have reached an edge."""
@@ -210,10 +207,11 @@ class AlienInvasion:
         """
         self._check_fleet_edges()
         self.aliens.update()
-        self._fire_alien_bullet()
+        self._fire_enemy_bullet()
 
         # Look for alien-ship collisions.
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            SoundPlayer.ship_hit()
             self._ship_hit()
 
         # Look for aliens hitting the bottom of the screen.
@@ -223,7 +221,7 @@ class AlienInvasion:
     def get_alien_randomly(self):
         """Return a random alien that will shoot a bullet."""
         # Chances for a alien to shoot a bullet this frame.
-        if 1 == rand(0, self.ALIEN_BULLET_SHOOT_PROBABILITY):
+        if 1 == rand(0, self.settings.enemy_bullet_probability):
             return self.get_random_alien()
         # END shoot_randomly
 
@@ -236,22 +234,23 @@ class AlienInvasion:
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
-            self.sound_player.shoot_bullet()
+            SoundPlayer.shoot_bullet()
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
         # END _fire_bullet
 
-    def _fire_alien_bullet(self):
-        """Create new alien bullet and fire it downwards from the current alien position."""
+    def _fire_enemy_bullet(self):
+        """Create new enemy bullet and fire it downwards from the current alien position."""
         random_alien = self.get_alien_randomly()
 
         if random_alien:
+            SoundPlayer.shoot_enemy_bullet()
             new_alien_bullet = EnemyBullet(self, random_alien)
             self.enemy_bullets.add(new_alien_bullet)
         # END _fire_alien_bullet
 
     def _check_keydown_events(self, event):
-        """Respond to keypresses."""
+        """Respond to key presses."""
         if event.key == pygame.K_SPACE and self.stats.game_active:
             self._fire_bullet()
         elif event.key == pygame.K_RIGHT:
@@ -317,6 +316,7 @@ class AlienInvasion:
     def _check_enemy_bullet_ship_collision(self):
         """Respond to bullet-ship collision."""
         if pygame.sprite.spritecollideany(self.ship, self.enemy_bullets):
+            SoundPlayer.ship_hit_by_bullet()
             self._ship_hit()
 
         # END _check_enemy_bullet_ship_collision
@@ -376,6 +376,7 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
                 # Treat this the same as if the ship got hit.
+                SoundPlayer.enemy_hit_bottom()
                 self._ship_hit()
                 break
 

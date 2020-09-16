@@ -2,35 +2,51 @@ import pygame
 import pygame.mixer as sound_player
 
 
-class SoundPlayer():
-    """Model that handles game sound effects."""
+class SoundPlayer:
+    """Class that handles game sound effects."""
 
-    def __init__(self, ai_game):
-        """Initialize 'SoundPlayer' instance."""
-        self.ai_game = ai_game
-        sound_player.init()
-
-    def play_background_music(self):
+    @staticmethod
+    def play_background_music():
         """Start playing background music."""
         pygame.mixer.music.load('sounds/background_1.mp3')
         pygame.mixer.music.play()
 
-    def pause_background_music(self):
+    @staticmethod
+    def pause_background_music():
         """Pause playing background music."""
         pygame.mixer.music.pause()
 
-    def stop_background_music(self):
+    @staticmethod
+    def stop_background_music():
         """Stop playing background music."""
         pygame.mixer.music.stop()
 
-    def shoot_bullet(self):
+    @staticmethod
+    def shoot_bullet():
         """Play bullet sound."""
         effect = pygame.mixer.Sound('sounds/bullet.wav')
         effect.play()
 
-    def ship_hit(self):
-        """Play sound when ship is hit."""
-        effect = pygame.mixer.Sound('sounds/hit.wav')
+    @staticmethod
+    def ship_hit():
+        """Play sound when ship is hit by enemy."""
+        effect = pygame.mixer.Sound('sounds/ship_hit_by_alien.wav')
         effect.play()
 
+    @staticmethod
+    def ship_hit_by_bullet():
+        """Play sound when ship hit by enemy bullet."""
+        effect = pygame.mixer.Sound('sounds/ship_hit_by_bullet.wav')
+        effect.play()
 
+    @staticmethod
+    def shoot_enemy_bullet():
+        """Play enemy bullet sound."""
+        effect = pygame.mixer.Sound('sounds/enemy_bullet.wav')
+        effect.play()
+
+    @staticmethod
+    def enemy_hit_bottom():
+        """Play sound when enemy reached the bottom of the screen."""
+        effect = pygame.mixer.Sound('sounds/enemy_hit_bottom.wav')
+        effect.play()
