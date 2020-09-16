@@ -50,3 +50,9 @@ class SoundPlayer:
         """Play sound when enemy reached the bottom of the screen."""
         effect = pygame.mixer.Sound('sounds/enemy_hit_bottom.wav')
         effect.play()
+
+    @staticmethod
+    def power_up():
+        """Play power up sound."""
+        effect = pygame.mixer.Sound('sounds/power_up.wav')
+        effect.play()
