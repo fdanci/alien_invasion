@@ -2,7 +2,6 @@ import sys
 import pygame
 from random import randint as rand
 
-
 from game_stats import GameStats
 
 from settings import Settings
@@ -16,6 +15,7 @@ from save_data import SaveData
 from saving_management import SavingManagement
 from enemy_models import ENEMY_MODELS
 from sound_player import SoundPlayer
+from enemy_bullet import EnemyBullet
 
 
 class AlienInvasion:
@@ -39,10 +39,11 @@ class AlienInvasion:
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
 
-        # Initiaslize the ship object.
+        # Initialize the ship object.
         self.ship = Ship(self)
 
         self.bullets = pygame.sprite.Group()
+        self.enemy_bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self.enemy_model = None
@@ -58,7 +59,6 @@ class AlienInvasion:
 
         # Initialize the sound player.
         self.sound_player = SoundPlayer(self)
-        
 
     def init_saving_mechanism(self):
         """Initialize saving and loading settings components."""
@@ -211,6 +211,7 @@ class AlienInvasion:
         """
         self._check_fleet_edges()
         self.aliens.update()
+        self._fire_alien_bullet()
 
         # Look for alien-ship collisions.
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
@@ -218,6 +219,20 @@ class AlienInvasion:
 
         # Look for aliens hitting the bottom of the screen.
         self._check_aliens_bottom()
+        # END _update_aliens
+
+    def get_alien_randomly(self):
+        """Return a random alien that will shoot a bullet."""
+        # Chances of 1/200 for a alien to shoot a bullet this frame
+        if 1 == rand(0, 200):
+            return self.get_random_alien()
+        # END shoot_randomly
+
+    def get_random_alien(self):
+        """Return a random chosen alien from the existing fleet."""
+        random_alien_index = rand(0, len(self.aliens.sprites()) - 1)
+        return self.aliens.sprites()[random_alien_index]
+        # END get_random_alien
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
@@ -225,6 +240,16 @@ class AlienInvasion:
             self.sound_player.shoot_bullet()
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
+        # END _fire_bullet
+
+    def _fire_alien_bullet(self):
+        """Create new alien bullet and fire it downwards from the current alien position."""
+        random_alien = self.get_alien_randomly()
+
+        if random_alien:
+            new_alien_bullet = EnemyBullet(self, random_alien)
+            self.enemy_bullets.add(new_alien_bullet)
+        # END _fire_alien_bullet
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -262,6 +287,9 @@ class AlienInvasion:
 
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+
+        for bullet in self.enemy_bullets.sprites():
+            bullet.draw_bullet()
         self.aliens.draw(self.screen)
 
         # Draw the score information.
@@ -272,8 +300,19 @@ class AlienInvasion:
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
-        # Update bullet positions.
-        # Will automatically call update on each bullet.
+        self.update_ship_bullets()
+        self.update_enemy_bullets()
+        # END _update_bullets
+
+    def update_enemy_bullets(self):
+        """Update the bullets fired by the enemy aliens."""
+        # Todo: Implement enemy bullet updates
+        self.enemy_bullets.update()
+        # END update_enemy_bullets
+
+    def update_ship_bullets(self):
+        """Update the bullets fired by the ship."""
+        # Update bullet positions. Will automatically call update on each bullet.
         self.bullets.update()
         # Get rid of bullets that are out of the screen.
         for bullet in self.bullets.copy():
@@ -281,6 +320,7 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
         self._check_bullet_alien_collisions()
+        # END update_ship_bullets
 
     def _check_bullet_alien_collisions(self):
         """Respond to bullet-alien collisions."""

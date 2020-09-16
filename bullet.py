@@ -13,7 +13,7 @@ class Bullet(Sprite):
 
         self.image = pygame.image.load('images/bullet.bmp')
 
-        # Create a bullet rect at (0, 0) and then set correct position.
+        # Create a bullet rect at (0, 0) and then set correct position on top of the ship.
         self.rect = pygame.Rect(
             0, 0, self.settings.bullet_width, self.settings.bullet_height)
         self.rect.midtop = ai_game.ship.rect.midtop
