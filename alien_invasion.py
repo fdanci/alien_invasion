@@ -16,6 +16,7 @@ from saving_management import SavingManagement
 from enemy_models import ENEMY_MODELS
 from sound_player import SoundPlayer
 from enemy_bullet import EnemyBullet
+from power_drop import PowerUp
 
 
 class AlienInvasion:
@@ -44,6 +45,7 @@ class AlienInvasion:
 
         self.bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+        self.power_ups = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
         self.enemy_model = None
@@ -136,6 +138,7 @@ class AlienInvasion:
             if self.stats.game_active:
                 self._update_bullets()
                 self._update_aliens()
+                self._update_power_ups()
                 self._update_screen()
             else:
                 SoundPlayer.stop_background_music()
@@ -247,7 +250,17 @@ class AlienInvasion:
             SoundPlayer.shoot_enemy_bullet()
             new_alien_bullet = EnemyBullet(self, random_alien)
             self.enemy_bullets.add(new_alien_bullet)
+            self._drop_power_up()
         # END _fire_alien_bullet
+
+    def _drop_power_up(self):
+        """Randomly, drop a power up item on the screen."""
+        # TODO: Implement power drop
+        if 1 == rand(0, 1):
+            print("POWER UP DROPPED!")
+            power_up = PowerUp(self)
+            self.power_ups.add(power_up)
+        # END _drop_power_up
 
     def _check_keydown_events(self, event):
         """Respond to key presses."""
@@ -276,18 +289,25 @@ class AlienInvasion:
         #     self.ship.moving_down = False
 
     def _update_screen(self):
-        """Update images on the screen, and flip to the new screen."""
+        """Update images on the screen for current frame, and flip to the new screen."""
         # Redraw the screen during each pass through the loop.
         self.screen.fill(self.settings.bg_color)
 
         self.ship.update()
         self.ship.blitme()
 
+        # Update bullet positions.
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
 
+        # Update enemy bullet positions.
         for bullet in self.enemy_bullets.sprites():
             bullet.draw_bullet()
+
+        # Update power ups positions.
+        for power_up in self.power_ups.sprites():
+            power_up.draw_power_up()
+
         self.aliens.draw(self.screen)
 
         # Draw the score information.
@@ -301,6 +321,22 @@ class AlienInvasion:
         self.update_ship_bullets()
         self.update_enemy_bullets()
         # END _update_bullets
+
+    def _update_power_ups(self):
+        """Update position of power ups."""
+        # TODO: Update power ups.
+        self.power_ups.update()
+        # Get rid of power ups that are out of the screen.
+        for power_up in self.power_ups.copy():
+            if power_up.rect.top > self.screen.get_rect().bottom:
+                self.power_ups.remove(power_up)
+
+        self._check_power_up_ship_collision()
+        # END update_power_ups
+
+    def _check_power_up_ship_collision(self):
+        """Respond to power up - ship collisions."""
+        # END _check_power_up_ship_collision
 
     def update_enemy_bullets(self):
         """Update the bullets fired by the enemy aliens."""

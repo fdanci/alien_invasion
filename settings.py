@@ -15,6 +15,11 @@ class Settings:
         self.bullet_height = 15
         self.bullets_allowed = 3
 
+        # Power Ups
+        self.power_up_speed = 1.5
+        self.power_up_width = 20
+        self.power_up_height = 15
+
         # Enemy bullet settings
         self.enemy_bullet_color = (60, 60, 60)
         self.enemy_bullet_width = 5
