@@ -84,7 +84,7 @@ class AlienInvasion:
             self.sb.prep_ships()
             # Get rid of any remaining aliens and bullets.
             # self.aliens.empty()
-            # self.bullets.empty()
+            self.bullets.empty()
             self.enemy_bullets.empty()
             # self.power_ups.empty()
             # Create a new fleet and center the ship.
