@@ -26,7 +26,11 @@ class Settings:
         self.power_up_active = False
         self.power_up = None
         self.powered_up_bullets = 0
-        self.settings_before_power_up = {}
+        self.settings_before_power_up = {
+            'bullet_speed': self.bullet_speed,
+            'bullet_width': self.bullet_width,
+            'bullet_height': self.bullet_height
+        }
 
         # Enemy bullet settings
         self.enemy_bullet_color = (60, 60, 60)
@@ -86,8 +90,6 @@ class Settings:
                 self.bullet_width *= 5
                 self.bullet_height *= 5
                 ai_game.SHOOT_NOT_MULTIPLE_ENEMIES = False
-                pass
-
             self.power_up_active = True
         # END enter_power_mode
 
@@ -100,6 +102,7 @@ class Settings:
 
     def exit_power_mode(self, ai_game):
         """Restore settings to values before last power up."""
+        self.powered_up_bullets = 0
         self.bullet_speed = self.settings_before_power_up['bullet_speed']
         self.bullet_width = self.settings_before_power_up['bullet_width']
         self.bullet_height = self.settings_before_power_up['bullet_height']

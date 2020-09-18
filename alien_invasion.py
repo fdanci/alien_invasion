@@ -6,7 +6,7 @@ from game_stats import GameStats
 
 from settings import Settings
 from ship import Ship
-from bullet import Bullet
+from image_bullet import ImageBullet
 from alien import Alien
 from time import sleep
 from button import Button
@@ -15,7 +15,7 @@ from save_data import SaveData
 from saving_management import SavingManagement
 from enemy_models import ENEMY_MODELS
 from sound_player import SoundPlayer
-from enemy_bullet import EnemyBullet
+from normal_bullet import NormalBullet
 from power_up import PowerUp
 
 
@@ -83,12 +83,15 @@ class AlienInvasion:
             self.stats.ships_left -= 1
             self.sb.prep_ships()
             # Get rid of any remaining aliens and bullets.
-            self.aliens.empty()
-            self.bullets.empty()
+            # self.aliens.empty()
+            # self.bullets.empty()
             self.enemy_bullets.empty()
+            # self.power_ups.empty()
             # Create a new fleet and center the ship.
-            self._create_fleet()
+            # self._create_fleet()
             self.ship.center_ship()
+            # Cancel Power Up
+            self.settings.exit_power_mode(self)
             # Pause.
             sleep(0.5)
         else:
@@ -153,7 +156,7 @@ class AlienInvasion:
                 pygame.display.flip()
 
     def _check_events(self):
-        """Respond to keypresses and mouse events."""
+        """Respond to key presses and mouse events."""
         # Watch for keyboard and mouse events.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -166,6 +169,7 @@ class AlienInvasion:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+        # END _check_events
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
@@ -183,6 +187,8 @@ class AlienInvasion:
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
+            self.enemy_bullets.empty()
+            self.power_ups.empty()
             # Create a new fleet and center the ship.
             self._create_fleet()
             self.ship.center_ship()
@@ -242,9 +248,10 @@ class AlienInvasion:
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
             SoundPlayer.shoot_bullet()
-            new_bullet = Bullet(self)
+            new_bullet = ImageBullet(self)
             self.bullets.add(new_bullet)
 
+        # Consume a bulled of powered up ammo.
         if self.settings.power_up_active:
             if self.settings.powered_up_bullets > 0:
                 self.settings.powered_up_bullets -= 1
@@ -259,7 +266,7 @@ class AlienInvasion:
 
         if random_alien:
             SoundPlayer.shoot_enemy_bullet()
-            new_alien_bullet = EnemyBullet(self, random_alien)
+            new_alien_bullet = NormalBullet(self, random_alien)
             self.enemy_bullets.add(new_alien_bullet)
         # END _fire_alien_bullet
 
@@ -324,6 +331,7 @@ class AlienInvasion:
 
         # Make the most recently drawn screen visible.
         pygame.display.flip()
+        # END _update_screen
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
@@ -401,6 +409,7 @@ class AlienInvasion:
             self.sb.check_high_score()
         if not self.aliens:
             self.start_new_level()
+        # END _check_bullet_alien_collisions
 
     def start_new_level(self):
         """Starts new level, increments level, resets ship."""

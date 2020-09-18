@@ -2,7 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 
 
-class EnemyBullet(Sprite):
+class NormalBullet(Sprite):
     """Class to manage the bullets fired by aliens."""
 
     def __init__(self, ai_game, alien):
