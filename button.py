@@ -2,19 +2,26 @@ import pygame.font
 
 
 class Button:
+    """
+    Default Button model. Used for all buttons inside this game.
+    """
 
-    def __init__(self, ai_game, msg):
+    def __init__(self, ai_game, msg, neighbour_rect_above=None, color=(0, 255, 0)):
         """Initialize button attributes."""
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         # Set the dimensions and properties of the button.
         self.width, self.height = 200, 50
-        self.button_color = (0, 255, 0)
+        self.button_color = color
         self.text_color = (255, 255, 255)
         self.font = pygame.font.SysFont(None, 48)
         # Build the button's rect object and center it.
         self.rect = pygame.Rect(0, 0, self.width, self.height)
-        self.rect.center = self.screen_rect.center
+        # Center the button if it doesn't have neighbours.
+        if not neighbour_rect_above:
+            self.rect.center = self.screen_rect.center
+        else:
+            self.rect.midtop = neighbour_rect_above.midbottom
         # The button message needs to be prepped only once.
         self._prep_msg(msg)
 

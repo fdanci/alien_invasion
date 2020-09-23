@@ -54,6 +54,7 @@ class AlienInvasion:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
+        self.exit_button = Button(self, "Exit", neighbour_rect_above=self.play_button.rect, color=(255, 0, 0))
 
         # Initialize saving components.
         self.save_data = SaveData(self)
@@ -83,12 +84,12 @@ class AlienInvasion:
             self.stats.ships_left -= 1
             self.sb.prep_ships()
             # Get rid of any remaining aliens and bullets.
-            # self.aliens.empty()
+            self.aliens.empty()
             self.bullets.empty()
             self.enemy_bullets.empty()
-            # self.power_ups.empty()
+            self.power_ups.empty()
             # Create a new fleet and center the ship.
-            # self._create_fleet()
+            self._create_fleet()
             self.ship.center_ship()
             # Cancel Power Up
             self.settings.exit_power_mode(self)
@@ -150,8 +151,8 @@ class AlienInvasion:
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
                 # Draw the play button if the game is inactive.
-                if not self.stats.game_active:
-                    self.play_button.draw_button()
+                self.play_button.draw_button()
+                self.exit_button.draw_button()
                 # Make the most recently drawn screen visible.
                 pygame.display.flip()
 
@@ -163,6 +164,7 @@ class AlienInvasion:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                self._check_exit_button(mouse_pos)
                 self._check_play_button(mouse_pos)
             # Ship movement events.
             elif event.type == pygame.KEYDOWN:
@@ -170,6 +172,13 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
         # END _check_events
+
+    def _check_exit_button(self, mouse_pos):
+        """Exit the game when user clicks the exit button."""
+        button_clicked = self.exit_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            sys.exit()
+        # [END _check_exit_button]
 
     def _check_play_button(self, mouse_pos):
         """Start a new game when the player clicks Play."""
