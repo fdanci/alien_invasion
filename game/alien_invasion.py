@@ -1,28 +1,36 @@
 import sys
+from time import sleep
 import pygame
 from random import randint as rand
 
-from game.settings.game_stats import GameStats
-from game.settings.settings import Settings
-from game.ship.ship import Ship
+# Settings
+from .settings.game_stats import GameStats
+from .settings.settings import Settings
 
-from game.enemy.alien import Alien
-from time import sleep
-from game.gui.button import Button
-from game.gui.scoreboard import Scoreboard
-from game.save.save_data import SaveData
-from game.save.progress_saver import ProgressSaver
-from game.enemy.enemy_models import ENEMY_MODELS
-from game.sound.sound_player import SoundPlayer
-from game.enemy.bullet import Bullet as enemy_bullet
-from game.ship.bullet import Bullet as ship_bullet
-from game.ship.power_up import PowerUp
+# GUI
+from .gui.button import Button
+from .gui.scoreboard import Scoreboard
+
+# Save & File management
+from .save.save_data import SaveData
+from .save.progress_saver import ProgressSaver
+
+# Sound
+from .sound.sound_player import SoundPlayer
+
+# Models
+from .enemy.alien import Alien
+from .enemy.enemy_models import ENEMY_MODELS
+from .enemy.bullet import Bullet as enemy_bullet
+from .ship.ship import Ship
+from .ship.bullet import Bullet as ship_bullet
+from .ship.power_up import PowerUp
 
 
 class Game:
-    """Manage game assets and behavior. Put together everything.
+    """Main game file.
 
-    Handles the game loop.
+    Manage game assets and behavior. Put together everything. Handles the game loop.
     """
 
     def __init__(self):
