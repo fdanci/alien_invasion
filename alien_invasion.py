@@ -98,6 +98,7 @@ class AlienInvasion:
         else:
             # TODO Implement 'Game Over' screen.
             self.stats.game_active = False
+            self.saving_management.save()  # Save data
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
@@ -442,22 +443,3 @@ class AlienInvasion:
                 self._ship_hit()
                 break
         # END _check_aliens_bottom
-
-
-def main():
-    """Make a game instance, run the game, save data before exit."""
-    ai = None
-
-    try:
-        ai = AlienInvasion()
-        ai.run_game()
-    except Exception as err:
-        print(f"{err}\n{err.__module__}")
-    finally:
-        if ai:
-            ai.saving_management.save()
-    # END main
-
-
-if __name__ == '__main__':
-    main()
