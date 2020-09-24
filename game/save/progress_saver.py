@@ -1,7 +1,7 @@
 import json
 
 
-class SavingManagement:
+class ProgressSaver:
     """This class will manage the saving system."""
 
     FILE_NAME = "save.txt"

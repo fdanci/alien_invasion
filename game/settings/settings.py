@@ -1,4 +1,4 @@
-from power_up import PowerUp
+from game.ship.power_up import PowerUp
 
 
 class Settings:

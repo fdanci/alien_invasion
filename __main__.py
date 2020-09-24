@@ -1,6 +1,6 @@
 """Application entry point."""
-from alien_invasion import AlienInvasion
+from game.alien_invasion import Game
 
 if __name__ == '__main__':
-    ai = AlienInvasion()
+    ai = Game()
     ai.run_game()

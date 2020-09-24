@@ -2,11 +2,11 @@ import pygame
 from pygame.sprite import Sprite
 
 
-class NormalBullet(Sprite):
-    """Class to manage the bullets fired by aliens."""
+class Bullet(Sprite):
+    """Bullet model, fired by enemies towards the ship."""
 
     def __init__(self, ai_game, alien):
-        """Initialize bullet at a random enemy"""
+        """Initialize bullet beneath the given alien."""
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
@@ -23,8 +23,11 @@ class NormalBullet(Sprite):
         self.x = float(self.rect.x)
 
     def update(self):
-        """Move the bullet down the screen. It is called automatically by 'pygame.sprite.Group().update()'"""
-        # Update the decimal position of the bullet.
+        """
+        Move the bullet down the screen.
+
+        It is called automatically by 'pygame.sprite.Group().update()'
+        """
         self.y += self.settings.enemy_bullet_speed
         # Update the rect position.
         self.rect.y = self.y

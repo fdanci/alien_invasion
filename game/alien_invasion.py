@@ -1,24 +1,29 @@
 import sys
 import pygame
 from random import randint as rand
-from game_stats import GameStats
-from settings import Settings
-from ship import Ship
-from image_bullet import ImageBullet
-from alien import Alien
+
+from game.settings.game_stats import GameStats
+from game.settings.settings import Settings
+from game.ship.ship import Ship
+
+from game.enemy.alien import Alien
 from time import sleep
-from button import Button
-from scoreboard import Scoreboard
-from save_data import SaveData
-from saving_management import SavingManagement
-from enemy_models import ENEMY_MODELS
-from sound_player import SoundPlayer
-from normal_bullet import NormalBullet
-from power_up import PowerUp
+from game.gui.button import Button
+from game.gui.scoreboard import Scoreboard
+from game.save.save_data import SaveData
+from game.save.progress_saver import ProgressSaver
+from game.enemy.enemy_models import ENEMY_MODELS
+from game.sound.sound_player import SoundPlayer
+from game.enemy.bullet import Bullet as enemy_bullet
+from game.ship.bullet import Bullet as ship_bullet
+from game.ship.power_up import PowerUp
 
 
-class AlienInvasion:
-    """Overall game class to manage game assets and behavior."""
+class Game:
+    """Manage game assets and behavior. Put together everything.
+
+    Handles the game loop.
+    """
 
     def __init__(self):
         """Initialize the game, and create game resources."""
@@ -56,7 +61,7 @@ class AlienInvasion:
 
         # Initialize saving components.
         self.save_data = SaveData(self)
-        self.saving_management = SavingManagement(self.save_data)
+        self.saving_management = ProgressSaver(self.save_data)
         self.load_saved_data()
 
         # Set game's icon.
@@ -256,7 +261,7 @@ class AlienInvasion:
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
             SoundPlayer.shoot_bullet()
-            new_bullet = ImageBullet(self)
+            new_bullet = ship_bullet(self)
             self.bullets.add(new_bullet)
 
         # Consume a bulled of powered up ammo.
@@ -274,7 +279,7 @@ class AlienInvasion:
 
         if random_alien:
             SoundPlayer.shoot_enemy_bullet()
-            new_alien_bullet = NormalBullet(self, random_alien)
+            new_alien_bullet = enemy_bullet(self, random_alien)
             self.enemy_bullets.add(new_alien_bullet)
         # END _fire_alien_bullet
 
