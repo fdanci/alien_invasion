@@ -14,7 +14,7 @@ class PowerUp(Sprite):
         self.screen = ai_game.screen
         self.settings = ai_game.settings
 
-        self.image = pygame.image.load('images/power_up.bmp')
+        self.image = pygame.image.load('assets/images/power_up.bmp')
 
         # Create a power drop rect at (random, 0) and then set
         random_x = randint(15, ai_game.settings.screen_width - 15)

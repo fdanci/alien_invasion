@@ -1,9 +1,7 @@
 import sys
 import pygame
 from random import randint as rand
-
 from game_stats import GameStats
-
 from settings import Settings
 from ship import Ship
 from image_bullet import ImageBullet
@@ -20,7 +18,7 @@ from power_up import PowerUp
 
 
 class AlienInvasion:
-    """Overall class to manage game assets and behavior."""
+    """Overall game class to manage game assets and behavior."""
 
     def __init__(self):
         """Initialize the game, and create game resources."""
@@ -62,7 +60,7 @@ class AlienInvasion:
         self.load_saved_data()
 
         # Set game's icon.
-        game_icon = pygame.image.load('images/game_logo.png')
+        game_icon = pygame.image.load('assets/images/game_logo.png')
         pygame.display.set_icon(game_icon)
 
         # Initialize the sound mixer.

@@ -14,9 +14,9 @@ class ImageBullet(Sprite):
         # If big bullet power up active, load bigger bullet image, else default image.
         if ai_game.settings.power_up_active and \
                 ai_game.settings.power_up == 'big_bullet':
-            self.image = pygame.image.load('images/big_bullet.bmp')
+            self.image = pygame.image.load('assets/images/big_bullet.bmp')
         else:
-            self.image = pygame.image.load('images/bullet.bmp')
+            self.image = pygame.image.load('assets/images/bullet.bmp')
 
         # Create a bullet rect at (0, 0) and then set correct position on top of the ship.
         self.rect = pygame.Rect(
