@@ -36,6 +36,12 @@ class SoundPlayer:
         effect.play()
 
     @staticmethod
+    def game_over():
+        """Play game over sound."""
+        effect = pygame.mixer.Sound('assets/sounds/game_over.wav')
+        effect.play()
+
+    @staticmethod
     def ship_hit_by_bullet():
         """Play sound when ship hit by enemy bullet."""
         effect = pygame.mixer.Sound('assets/sounds/ship_hit_by_bullet.wav')

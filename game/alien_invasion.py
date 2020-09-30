@@ -4,6 +4,7 @@ import pygame
 from random import randint as rand
 
 # Settings
+from .gui.game_over import GameOver
 from .settings.game_stats import GameStats
 from .settings.settings import Settings
 
@@ -67,6 +68,8 @@ class Game:
         self.play_button = Button(self, "Play")
         self.exit_button = Button(self, "Exit", neighbour_rect_above=self.play_button.rect, color=(255, 0, 0))
 
+        self.game_over = GameOver(self)
+
         # Initialize saving components.
         self.save_data = SaveData(self)
         self.saving_management = ProgressSaver(self.save_data)
@@ -107,9 +110,14 @@ class Game:
             # Pause.
             sleep(0.5)
         else:
-            # TODO Implement 'Game Over' screen.
             self.stats.game_active = False
             self.saving_management.save()  # Save data
+            self.screen.fill(self.settings.bg_color)
+
+            # Game Over
+            self.game_over.show_game_over()
+            pygame.display.flip()
+            sleep(2.2)
 
     def _create_fleet(self):
         """Create the fleet of aliens."""
@@ -158,7 +166,6 @@ class Game:
                 self._update_power_ups()
                 self._update_screen()
             else:
-                SoundPlayer.stop_background_music()
                 # Show the mouse cursor.
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
