@@ -53,6 +53,12 @@ class Game:
         # and create a scoreboard.
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
+        self.font = pygame.font.SysFont(None, 48)
+
+        # Initialize saving components.
+        self.save_data = SaveData(self)
+        self.saving_management = ProgressSaver(self.save_data)
+        self.load_saved_data()
 
         # Initialize the ship object.
         self.ship = Ship(self)
@@ -73,11 +79,6 @@ class Game:
 
         self.game_over = GameOver(self)
 
-        # Initialize saving components.
-        self.save_data = SaveData(self)
-        self.saving_management = ProgressSaver(self.save_data)
-        self.load_saved_data()
-
         # Set game's icon.
         game_icon = pygame.image.load('assets/images/game_logo.png')
         pygame.display.set_icon(game_icon)
@@ -91,6 +92,7 @@ class Game:
         saved_data = self.saving_management.get_saved_data()
         if saved_data:
             self.stats.load_saved_data(saved_data)
+            self.settings.current_player = saved_data['player']
             self.sb.prep_high_score()
         # END load_saved_data
 
@@ -169,7 +171,6 @@ class Game:
                 self._update_power_ups()
                 self._update_screen()
             else:
-                # TODO: Implement
                 # Show the mouse cursor.
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
@@ -178,14 +179,30 @@ class Game:
                 self.exit_button.draw_button()
                 self.player1_button.draw_button()
                 self.player2_button.draw_button()
+                self.show_highscore()
                 # Make the most recently drawn screen visible.
                 pygame.display.flip()
+
+    def show_highscore(self):
+        """Draw high score to the menu screen."""
+        high_score = round(self.stats.high_score, -1)
+        high_score_str = "HIGHSCORE - {:,}".format(high_score)
+        high_score_image = self.font.render(
+            high_score_str, True, (30, 30, 30), self.settings.bg_color)
+        # Center the high score at the top of the screen.
+        high_score_rect = high_score_image.get_rect()
+        high_score_rect.centerx = self.screen.get_rect().centerx
+        high_score_rect.top = self.screen.get_rect().top
+        high_score_rect.y = high_score_rect.y + 20
+
+        self.screen.blit(high_score_image, high_score_rect)
 
     def _check_events(self):
         """Respond to key presses and mouse events."""
         # Watch for keyboard and mouse events.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.saving_management.save()  # Save data
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
@@ -207,21 +224,26 @@ class Game:
         """
         button_clicked = self.player1_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            print("Player 1")
+            self.settings.current_player = '1'
+            # Reinitialize the ship object.
+            self.ship = Ship(self)
 
     def _check_player_2_button(self, mouse_pos):
-        """Check if current player switched to player 1.
+        """Check if current player switched to player 2.
 
         This will cause some game settings to change.
         """
         button_clicked = self.player2_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
-            print("Player 2")
+            self.settings.current_player = '2'
+            # Reinitialize the ship object.
+            self.ship = Ship(self)
 
     def _check_exit_button(self, mouse_pos):
         """Exit the game when user clicks the exit button."""
         button_clicked = self.exit_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.stats.game_active:
+            self.saving_management.save()  # Save data
             sys.exit()
         # [END _check_exit_button]
 
@@ -345,6 +367,7 @@ class Game:
         # elif event.key == pygame.K_DOWN:
         #     self.ship.moving_down = True
         elif event.key == pygame.K_q:
+            self.saving_management.save()  # Save data
             sys.exit()
         # END _check_keydown_events
 

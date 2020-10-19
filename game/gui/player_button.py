@@ -8,32 +8,38 @@ class PlayerButton:
 
     def __init__(self, ai_game, player, neighbour):
         """Initialize player button attributes."""
+        self.ai_game = ai_game
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
+        self.player = player
         # Set the dimensions and properties of the button.
-        self.width, self.height = 50, 50
-        self.button_color = (0, 0, 0)
+        self.width, self.height = 80, 80
 
         # Build the button's rect object and center it.
         self.rect = pygame.Rect(0, 0, self.width, self.height)
 
         self.rect.midbottom = neighbour.midtop
 
-        if player == '1':
+        if self.player == '1':
             self.rect.x = self.rect.x - 40
-        elif player == '2':
+        elif self.player == '2':
             self.rect.x = self.rect.x + 40
 
-        self.rect.y = self.rect.y - 10
+        self.rect.y = self.rect.y - 20
 
         self._prep_img()
 
     def _prep_img(self):
-        """Draw image inside button like rect."""
-        self.img = pygame.image.load('assets/images/power_up.bmp')
+        """Draw player image inside button."""
+        if self.player == '1':
+            self.img = pygame.image.load('assets/images/player1.png')
+        else:
+            self.img = pygame.image.load('assets/images/player2.png')
+
         self.image_rect = self.img.get_rect()
         self.image_rect.center = self.rect.center
 
     def draw_button(self):
-        self.screen.fill(0, self.rect)
+        if self.ai_game.settings.current_player == self.player:
+            self.screen.fill((123,123,123), self.rect)
         self.screen.blit(self.img, self.image_rect)

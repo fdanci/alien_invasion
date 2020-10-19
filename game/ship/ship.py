@@ -13,7 +13,10 @@ class Ship(Sprite):
         self.screen_rect = ai_game.screen.get_rect()
 
         # Load ship image and get its rect
-        self.image = pygame.image.load('assets\\images\\florin_hero.bmp')
+        if ai_game.settings.current_player == '1':
+            self.image = pygame.image.load('assets\\images\\florin_hero.bmp')
+        elif ai_game.settings.current_player == '2':
+            self.image = pygame.image.load('assets\\images\\daniela_hero.bmp')
         self.rect = self.image.get_rect()
 
         # Start each new ship at the bottom center of the screen.
