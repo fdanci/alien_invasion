@@ -11,6 +11,7 @@ from .settings.settings import Settings
 # GUI
 from .gui.button import Button
 from .gui.scoreboard import Scoreboard
+from .gui.player_button import PlayerButton
 
 # Save & File management
 from .save.save_data import SaveData
@@ -66,6 +67,8 @@ class Game:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
+        self.player1_button = PlayerButton(self, "1", self.play_button.rect)
+        self.player2_button = PlayerButton(self, "2", self.play_button.rect)
         self.exit_button = Button(self, "Exit", neighbour_rect_above=self.play_button.rect, color=(255, 0, 0))
 
         self.game_over = GameOver(self)
@@ -166,12 +169,15 @@ class Game:
                 self._update_power_ups()
                 self._update_screen()
             else:
+                # TODO: Implement
                 # Show the mouse cursor.
                 self.screen.fill(self.settings.bg_color)
                 pygame.mouse.set_visible(True)
                 # Draw the play button if the game is inactive.
                 self.play_button.draw_button()
                 self.exit_button.draw_button()
+                self.player1_button.draw_button()
+                self.player2_button.draw_button()
                 # Make the most recently drawn screen visible.
                 pygame.display.flip()
 
@@ -185,12 +191,32 @@ class Game:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_exit_button(mouse_pos)
                 self._check_play_button(mouse_pos)
+                self._check_player_1_button(mouse_pos)
+                self._check_player_2_button(mouse_pos)
             # Ship movement events.
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
         # END _check_events
+
+    def _check_player_1_button(self, mouse_pos):
+        """Check if current player switched to player 1.
+
+        This will cause some game settings to change.
+        """
+        button_clicked = self.player1_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            print("Player 1")
+
+    def _check_player_2_button(self, mouse_pos):
+        """Check if current player switched to player 1.
+
+        This will cause some game settings to change.
+        """
+        button_clicked = self.player2_button.rect.collidepoint(mouse_pos)
+        if button_clicked and not self.stats.game_active:
+            print("Player 2")
 
     def _check_exit_button(self, mouse_pos):
         """Exit the game when user clicks the exit button."""

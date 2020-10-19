@@ -6,6 +6,9 @@ class Settings:
 
     def __init__(self):
         """Initialize the game's static settings."""
+        # Game settings
+        self.current_player = '1'
+
         # Screen settings
         self.bg_color = (234, 229, 229)
         self.screen_width = 1270

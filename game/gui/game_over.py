@@ -6,7 +6,7 @@ from game.sound.sound_player import SoundPlayer
 class GameOver:
     """Game over screen."""
 
-    def __init__(self, ai_game, msg="Game Over", color=(0, 255, 0)):
+    def __init__(self, ai_game, msg="Game Over"):
         """Initialize game over attributes."""
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
