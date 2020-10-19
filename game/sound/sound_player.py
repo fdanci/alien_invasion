@@ -6,10 +6,13 @@ class SoundPlayer:
     """Class that handles game sound effects."""
 
     @staticmethod
-    def play_background_music():
+    def play_background_music(player):
         """Start playing background music."""
-        pygame.mixer.music.load('assets/sounds/background_1.mp3')
-        pygame.mixer.music.set_volume(0.7)
+        if player == "1":
+            pygame.mixer.music.load('assets/sounds/background_1.mp3')
+            pygame.mixer.music.set_volume(0.5)
+        elif player == "2":
+            pygame.mixer.music.load('assets/sounds/background_2.mp3')
         pygame.mixer.music.play()
 
     @staticmethod
@@ -26,7 +29,7 @@ class SoundPlayer:
     def shoot_bullet():
         """Play bullet sound."""
         effect = pygame.mixer.Sound('assets/sounds/bullet.wav')
-        effect.set_volume(0.7)
+        effect.set_volume(0.5)
         effect.play()
 
     @staticmethod
@@ -51,7 +54,7 @@ class SoundPlayer:
     def shoot_enemy_bullet():
         """Play enemy bullet sound."""
         effect = pygame.mixer.Sound('assets/sounds/enemy_bullet.wav')
-        effect.set_volume(0.6)
+        effect.set_volume(0.5)
         effect.play()
 
     @staticmethod
@@ -64,5 +67,5 @@ class SoundPlayer:
     def power_up():
         """Play power up sound."""
         effect = pygame.mixer.Sound('assets/sounds/power_up.wav')
-        effect.set_volume(0.6)
+        effect.set_volume(0.4)
         effect.play()

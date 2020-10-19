@@ -22,7 +22,8 @@ from .sound.sound_player import SoundPlayer
 
 # Models
 from .enemy.alien import Alien
-from .enemy.enemy_models import ENEMY_MODELS
+from .enemy.enemy_models import ENEMY_MODELS_DANIELA
+from .enemy.enemy_models import ENEMY_MODELS_FLORIN
 from .enemy.bullet import Bullet as enemy_bullet
 from .ship.ship import Ship
 from .ship.bullet import Bullet as ship_bullet
@@ -47,7 +48,7 @@ class Game:
             (self.settings.screen_width,
              self.settings.screen_height))
 
-        pygame.display.set_caption("Daniela Invadeaza Lumea")
+        pygame.display.set_caption("Invaders")
 
         # Create an instance to store game statistics,
         # and create a scoreboard.
@@ -73,9 +74,13 @@ class Game:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
-        self.player1_button = PlayerButton(self, "1", self.play_button.rect)
-        self.player2_button = PlayerButton(self, "2", self.play_button.rect)
-        self.exit_button = Button(self, "Exit", neighbour_rect_above=self.play_button.rect, color=(255, 0, 0))
+        self.player1_button = PlayerButton(self, player="1",
+                                           neighbour=self.play_button.rect)
+        self.player2_button = PlayerButton(self, player="2",
+                                           neighbour=self.play_button.rect)
+        self.exit_button = Button(self, "Exit",
+                                  neighbour_rect_above=self.play_button.rect,
+                                  color=(255, 0, 0))
 
         self.game_over = GameOver(self)
 
@@ -129,8 +134,14 @@ class Game:
         # Create an alien and find the number of aliens in a row.
         # Spacing between each alien is equal to one alien width.
 
-        self.enemy_model = pygame.image.load(
-            ENEMY_MODELS[rand(0, len(ENEMY_MODELS) - 1)])  # Set random enemy model
+        if self.settings.current_player == '1':
+            self.enemy_model = pygame.image.load(
+                ENEMY_MODELS_DANIELA[rand(
+                    0, len(ENEMY_MODELS_DANIELA) - 1)])  # Set random enemy model
+        elif self.settings.current_player == '2':
+            self.enemy_model = pygame.image.load(
+                ENEMY_MODELS_FLORIN[rand(
+                    0, len(ENEMY_MODELS_FLORIN) - 1)])  # Set random enemy model
 
         alien = Alien(self, self.enemy_model)
         alien_width, alien_height = alien.rect.size
@@ -271,7 +282,7 @@ class Game:
             # Hide the mouse cursor.
             pygame.mouse.set_visible(False)
             # Start music during gameplay.
-            SoundPlayer.play_background_music()
+            SoundPlayer.play_background_music(self.settings.current_player)
         # END _check_play_button
 
     def _check_fleet_edges(self):
