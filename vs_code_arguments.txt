@@ -1,6 +1,0 @@
-Visual Studio Code pylint Arguments
-________________________________________________________________
-Settings: python.linting.pylintArgs
---ignored-modules=pygame
---errors-only
-________________________________________________________________
