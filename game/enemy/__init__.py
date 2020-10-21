@@ -2,4 +2,4 @@
 Contains all data about the enemy.
 """
 
-__all__ = ["alien", "bullet"]
+__all__ = ["enemy.py", "bullet"]

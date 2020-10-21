@@ -1,11 +1,11 @@
 from pygame.sprite import Sprite
 
 
-class Alien(Sprite):
-    """Alien model"""
+class Enemy(Sprite):
+    """Enemy model"""
 
     def __init__(self, ai_game, enemy_model):
-        """Initialize the alien and set its starting position."""
+        """Initialize the enemy and set its starting position."""
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
@@ -25,7 +25,7 @@ class Alien(Sprite):
         self.rect.x = self.x
 
     def check_edges(self):
-        """Return True if alien is at edge of screen."""
+        """Return True if enemy is at edge of screen."""
         screen_rect = self.screen.get_rect()
         if self.rect.right >= screen_rect.right or self.rect.left <= 0:
             return True

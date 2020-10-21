@@ -21,7 +21,7 @@ from .save.progress_saver import ProgressSaver
 from .sound.sound_player import SoundPlayer
 
 # Models
-from .enemy.alien import Alien
+from .enemy.enemy import Enemy
 from .enemy.enemy_models import ENEMY_MODELS_DANIELA
 from .enemy.enemy_models import ENEMY_MODELS_FLORIN
 from .enemy.bullet import Bullet as enemy_bullet
@@ -143,7 +143,7 @@ class Game:
                 ENEMY_MODELS_FLORIN[rand(
                     0, len(ENEMY_MODELS_FLORIN) - 1)])  # Set random enemy model
 
-        alien = Alien(self, self.enemy_model)
+        alien = Enemy(self, self.enemy_model)
         alien_width, alien_height = alien.rect.size
         alien_width = alien.rect.width
         available_space_x = self.settings.screen_width - (2 * alien_width)
@@ -164,7 +164,7 @@ class Game:
 
     def _create_alien(self, alien_number, row_number):
         """Create an alien and place it in the row."""
-        alien = Alien(self, self.enemy_model)
+        alien = Enemy(self, self.enemy_model)
         alien_width = alien.rect.width
         alien.x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien.x
