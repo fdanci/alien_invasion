@@ -9,18 +9,18 @@ class Enemy(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        # Load the alien image and set its rect attribute.
+        # Load the enemy image and set its rect attribute.
         self.image = enemy_model
         self.rect = self.image.get_rect()
-        # Start each new alien near the top left of the screen.
+        # Start each new enemy near the top left of the screen.
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height
-        # Store the alien's exact horizontal position.
+        # Store the enemy's exact horizontal position.
         self.x = float(self.rect.x)
 
     def update(self):
-        """Move the alien to the right."""
-        self.x += (self.settings.alien_speed *
+        """Move the enemy to the right."""
+        self.x += (self.settings.enemy_speed *
                    self.settings.fleet_direction)
         self.rect.x = self.x
 

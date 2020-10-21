@@ -1,5 +1,5 @@
 class GameStats:
-    """Track statistics for Alien Invasion."""
+    """Track statistics for enemy Invasion."""
 
     def __init__(self, ai_game):
         """Initialize statistics."""
@@ -11,7 +11,7 @@ class GameStats:
 
         self.score = 0
         self.level = 1
-        self.aliens_killed = 0
+        self.enemies_killed = 0
         # High score should never be reset.
         self.high_score = 0
 
@@ -24,4 +24,4 @@ class GameStats:
     def load_saved_data(self, saved_data):
         """Load saved data into current game instance."""
         self.high_score = saved_data['high_score']
-        self.aliens_killed = saved_data['aliens_killed']
+        self.enemies_killed = saved_data['enemies_killed']

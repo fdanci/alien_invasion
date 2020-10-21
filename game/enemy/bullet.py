@@ -5,18 +5,18 @@ from pygame.sprite import Sprite
 class Bullet(Sprite):
     """Bullet model, fired by enemies towards the ship."""
 
-    def __init__(self, ai_game, alien):
-        """Initialize bullet beneath the given alien."""
+    def __init__(self, ai_game, enemy):
+        """Initialize bullet beneath the given enemy."""
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.color = self.settings.enemy_bullet_color
-        self.alien = alien
+        self.enemy = enemy
 
         # Create a bullet rect at (0, 0) and then set correct position underneath the enemy.
         self.rect = pygame.Rect(
             0, 0, self.settings.enemy_bullet_width, self.settings.enemy_bullet_height)
-        self.rect.midbottom = alien.rect.midbottom
+        self.rect.midbottom = enemy.rect.midbottom
 
         # Store the bullet's position as a decimal value.
         self.y = float(self.rect.y)

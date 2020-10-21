@@ -35,7 +35,7 @@ class SoundPlayer:
     @staticmethod
     def ship_hit():
         """Play sound when ship is hit by enemy."""
-        effect = pygame.mixer.Sound('assets/sounds/ship_hit_by_alien.wav')
+        effect = pygame.mixer.Sound('assets/sounds/ship_hit_by_enemy.wav')
         effect.play()
 
     @staticmethod

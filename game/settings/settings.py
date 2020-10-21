@@ -2,7 +2,7 @@ from game.ship.power_up import PowerUp
 
 
 class Settings:
-    """A class to store all settings for Alien Invasion."""
+    """A class to store all settings for enemy Invasion."""
 
     def __init__(self):
         """Initialize the game's static settings."""
@@ -45,18 +45,18 @@ class Settings:
         self.ship_speed = 1.5
         self.ship_limit = 3
 
-        # Alien settings
+        # enemy settings
         self.enemy_bullet_probability = 600
         self.fleet_drop_speed = 15
         self.fleet_direction = 1  # Fleet_direction of 1 represents right; -1 represents left
-        self.alien_speed = 1.0
+        self.enemy_speed = 1.0
 
         # How quickly the game speeds up
         self.speedup_scale = 1.1
 
         # Scoring
-        self.score_scale = 1.5  # How quickly the alien point values increase
-        self.alien_points = 50
+        self.score_scale = 1.5  # How quickly the enemy point values increase
+        self.enemy_points = 50
         # END __init__
 
     def reset_settings(self):
@@ -64,17 +64,17 @@ class Settings:
         self.ship_speed = 1.5
         self.bullet_speed = 2.0
         self.enemy_bullet_speed = 1.0
-        self.alien_speed = 1.0
+        self.enemy_speed = 1.0
         self.fleet_direction = 1
-        self.alien_points = 50
+        self.enemy_points = 50
         # END reset_settings
 
     def increase_speed(self):
-        """Increase speed settings and alien point values."""
+        """Increase speed settings and enemy point values."""
         self.ship_speed *= self.speedup_scale
         self.enemy_bullet_speed *= self.speedup_scale
-        self.alien_speed *= self.speedup_scale
-        self.alien_points = int(self.alien_points * self.score_scale)
+        self.enemy_speed *= self.speedup_scale
+        self.enemy_points = int(self.enemy_points * self.score_scale)
         if not self.power_up_active:
             self.bullet_speed *= self.speedup_scale
         # END increase_speed

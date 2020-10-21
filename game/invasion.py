@@ -67,7 +67,7 @@ class Game:
         self.bullets = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.power_ups = pygame.sprite.Group()
-        self.aliens = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
 
         self.enemy_model = None
         self._create_fleet()
@@ -102,13 +102,13 @@ class Game:
         # END load_saved_data
 
     def _ship_hit(self):
-        """Respond to the ship being hit by an alien."""
+        """Respond to the ship being hit by an enemy."""
         if self.stats.ships_left > 0:
             # Decrement ships_left, and update scoreboard.
             self.stats.ships_left -= 1
             self.sb.prep_ships()
-            # Get rid of any remaining aliens and bullets.
-            self.aliens.empty()
+            # Get rid of any remaining enemies and bullets.
+            self.enemies.empty()
             self.bullets.empty()
             self.enemy_bullets.empty()
             self.power_ups.empty()
@@ -130,9 +130,9 @@ class Game:
             sleep(2.2)
 
     def _create_fleet(self):
-        """Create the fleet of aliens."""
-        # Create an alien and find the number of aliens in a row.
-        # Spacing between each alien is equal to one alien width.
+        """Create the fleet of enemies."""
+        # Create an enemy and find the number of enemies in a row.
+        # Spacing between each enemy is equal to one enemy width.
 
         if self.settings.current_player == '1':
             self.enemy_model = pygame.image.load(
@@ -143,33 +143,33 @@ class Game:
                 ENEMY_MODELS_FLORIN[rand(
                     0, len(ENEMY_MODELS_FLORIN) - 1)])  # Set random enemy model
 
-        alien = Enemy(self, self.enemy_model)
-        alien_width, alien_height = alien.rect.size
-        alien_width = alien.rect.width
-        available_space_x = self.settings.screen_width - (2 * alien_width)
-        number_aliens_x = available_space_x // (2 * alien_width)
+        enemy = Enemy(self, self.enemy_model)
+        enemy_width, enemy_height = enemy.rect.size
+        enemy_width = enemy.rect.width
+        available_space_x = self.settings.screen_width - (2 * enemy_width)
+        number_enemies_x = available_space_x // (2 * enemy_width)
 
-        # Determine the number of rows of aliens that fit on the screen.
+        # Determine the number of rows of enemies that fit on the screen.
         ship_height = self.ship.rect.height
         available_space_y = (self.settings.screen_height -
-                             (3 * alien_height) - ship_height)
-        number_rows = available_space_y // (2 * alien_height)
+                             (3 * enemy_height) - ship_height)
+        number_rows = available_space_y // (2 * enemy_height)
 
-        # Create the full fleet of aliens.
+        # Create the full fleet of enemies.
         for row_number in range(number_rows):
-            # Create row of aliens.
-            for alien_number in range(number_aliens_x):
-                # Create an alien and place it in the row.
-                self._create_alien(alien_number, row_number)
+            # Create row of enemies.
+            for enemy_number in range(number_enemies_x):
+                # Create an enemy and place it in the row.
+                self._create_enemy(enemy_number, row_number)
 
-    def _create_alien(self, alien_number, row_number):
-        """Create an alien and place it in the row."""
-        alien = Enemy(self, self.enemy_model)
-        alien_width = alien.rect.width
-        alien.x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien.x
-        alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
-        self.aliens.add(alien)
+    def _create_enemy(self, enemy_number, row_number):
+        """Create an enemy and place it in the row."""
+        enemy = Enemy(self, self.enemy_model)
+        enemy_width = enemy.rect.width
+        enemy.x = enemy_width + 2 * enemy_width * enemy_number
+        enemy.rect.x = enemy.x
+        enemy.rect.y = enemy.rect.height + 2 * enemy.rect.height * row_number
+        self.enemies.add(enemy)
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -178,7 +178,7 @@ class Game:
 
             if self.stats.game_active:
                 self._update_bullets()
-                self._update_aliens()
+                self._update_enemies()
                 self._update_power_ups()
                 self._update_screen()
             else:
@@ -271,8 +271,8 @@ class Game:
             self.sb.prep_score()
             self.sb.prep_level()
             self.sb.prep_ships()
-            # Get rid of any remaining aliens and bullets.
-            self.aliens.empty()
+            # Get rid of any remaining enemies and bullets.
+            self.enemies.empty()
             self.bullets.empty()
             self.enemy_bullets.empty()
             self.power_ups.empty()
@@ -286,50 +286,50 @@ class Game:
         # END _check_play_button
 
     def _check_fleet_edges(self):
-        """Respond appropriately if any aliens have reached an edge."""
-        for alien in self.aliens.sprites():
-            if alien.check_edges():
+        """Respond appropriately if any enemies have reached an edge."""
+        for enemy in self.enemies.sprites():
+            if enemy.check_edges():
                 self._change_fleet_direction()
                 break
         # END _check_fleet_edges
 
     def _change_fleet_direction(self):
         """Drop the entire fleet and change the fleet's direction."""
-        for alien in self.aliens.sprites():
-            alien.rect.y += self.settings.fleet_drop_speed
+        for enemy in self.enemies.sprites():
+            enemy.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
         # END _change_fleet_direction
 
-    def _update_aliens(self):
+    def _update_enemies(self):
         """
         Check if the fleet is at an edge,
-        then update the positions of all aliens in the fleet.
+        then update the positions of all enemies in the fleet.
         """
         self._check_fleet_edges()
-        self.aliens.update()
+        self.enemies.update()
         self._fire_enemy_bullet()
 
-        # Look for alien-ship collisions.
-        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+        # Look for enemy-ship collisions.
+        if pygame.sprite.spritecollideany(self.ship, self.enemies):
             SoundPlayer.ship_hit()
             self._ship_hit()
 
-        # Look for aliens hitting the bottom of the screen.
-        self._check_aliens_bottom()
-        # END _update_aliens
+        # Look for enemies hitting the bottom of the screen.
+        self._check_enemies_bottom()
+        # END _update_enemies
 
-    def get_alien_randomly(self):
-        """Return a random alien that will shoot a bullet."""
-        # Chances for a alien to shoot a bullet this frame.
+    def get_enemy_randomly(self):
+        """Return a random enemy that will shoot a bullet."""
+        # Chances for a enemy to shoot a bullet this frame.
         if 1 == rand(0, self.settings.enemy_bullet_probability):
-            return self.get_random_alien()
+            return self.get_random_enemy()
         # END shoot_randomly
 
-    def get_random_alien(self):
-        """Return a random chosen alien from the existing fleet."""
-        random_alien_index = rand(0, len(self.aliens.sprites()) - 1)
-        return self.aliens.sprites()[random_alien_index]
-        # END get_random_alien
+    def get_random_enemy(self):
+        """Return a random chosen enemy from the existing fleet."""
+        random_enemy_index = rand(0, len(self.enemies.sprites()) - 1)
+        return self.enemies.sprites()[random_enemy_index]
+        # END get_random_enemy
 
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
@@ -348,14 +348,14 @@ class Game:
         # END _fire_bullet
 
     def _fire_enemy_bullet(self):
-        """Create new enemy bullet and fire it downwards from the current alien position."""
-        random_alien = self.get_alien_randomly()
+        """Create new enemy bullet and fire it downwards from the current enemy position."""
+        random_enemy = self.get_enemy_randomly()
 
-        if random_alien:
+        if random_enemy:
             SoundPlayer.shoot_enemy_bullet()
-            new_alien_bullet = enemy_bullet(self, random_alien)
-            self.enemy_bullets.add(new_alien_bullet)
-        # END _fire_alien_bullet
+            new_enemy_bullet = enemy_bullet(self, random_enemy)
+            self.enemy_bullets.add(new_enemy_bullet)
+        # END _fire_enemy_bullet
 
     def _drop_power_up(self):
         """Randomly, drop a power up item on the screen."""
@@ -412,7 +412,7 @@ class Game:
         for power_up in self.power_ups.sprites():
             power_up.draw_power_up()
 
-        self.aliens.draw(self.screen)
+        self.enemies.draw(self.screen)
 
         # Draw the score information.
         self.sb.show_score()
@@ -455,7 +455,7 @@ class Game:
         # END power_up_the_ship
 
     def update_enemy_bullets(self):
-        """Update the bullets fired by the enemy aliens."""
+        """Update the bullets fired by the enemy enemies."""
         self.enemy_bullets.update()
         # Get rid of bullets that are out of the screen.
         for bullet in self.enemy_bullets.copy():
@@ -481,23 +481,23 @@ class Game:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
-        self._check_bullet_alien_collisions()
+        self._check_bullet_enemy_collisions()
         # END update_ship_bullets
 
-    def _check_bullet_alien_collisions(self):
-        """Respond to bullet-alien collisions."""
+    def _check_bullet_enemy_collisions(self):
+        """Respond to bullet-enemy collisions."""
         collisions = pygame.sprite.groupcollide(
-            self.bullets, self.aliens, self.SHOOT_NOT_MULTIPLE_ENEMIES, True)
+            self.bullets, self.enemies, self.SHOOT_NOT_MULTIPLE_ENEMIES, True)
 
         if collisions:
-            for aliens in collisions.values():
-                self.stats.score += self.settings.alien_points * len(aliens)
-                self.stats.aliens_killed += 1
+            for enemies in collisions.values():
+                self.stats.score += self.settings.enemy_points * len(enemies)
+                self.stats.enemies_killed += 1
             self.sb.prep_score()
             self.sb.check_high_score()
-        if not self.aliens:
+        if not self.enemies:
             self.start_new_level()
-        # END _check_bullet_alien_collisions
+        # END _check_bullet_enemy_collisions
 
     def start_new_level(self):
         """Starts new level, increments level, resets ship."""
@@ -511,13 +511,13 @@ class Game:
         self.sb.prep_level()
         # END start_new_level
 
-    def _check_aliens_bottom(self):
-        """Check if any aliens have reached the bottom of the screen."""
+    def _check_enemies_bottom(self):
+        """Check if any enemies have reached the bottom of the screen."""
         screen_rect = self.screen.get_rect()
-        for alien in self.aliens.sprites():
-            if alien.rect.bottom >= screen_rect.bottom:
+        for enemy in self.enemies.sprites():
+            if enemy.rect.bottom >= screen_rect.bottom:
                 # Treat this the same as if the ship got hit.
                 SoundPlayer.enemy_hit_bottom()
                 self._ship_hit()
                 break
-        # END _check_aliens_bottom
+        # END _check_enemies_bottom

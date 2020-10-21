@@ -13,7 +13,7 @@ class SaveData:
         """Return data to be saved, neatly formatted as json"""
         data = {
             'high_score': self.ai_game.stats.high_score,
-            'aliens_killed': self.ai_game.stats.aliens_killed,
+            'enemies_killed': self.ai_game.stats.enemies_killed,
             'player': self.ai_game.settings.current_player
         }
         return data
